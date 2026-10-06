@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#6fa86d" />
+  <title>Magic Castle</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game" aria-label="Jogo Magic Castle">
+    <header id="hud">
+      <div class="hud-block hud-left">
+        <strong class="game-title">MAGIC CASTLE</strong>
+        <span id="lives" class="lives" aria-label="Vida do castelo">♥ ♥ ♥</span>
+      </div>
+
+      <div class="hud-block hud-center">
+        <strong id="timer">00:00</strong>
+        <span id="wave">WAVE 1</span>
+      </div>
+
+      <div class="hud-block hud-right">
+        <span id="score">SCORE: 000000</span>
+      </div>
+    </header>
+
+    <main id="battlefield">
+      <div id="enemy-layer" aria-live="polite"></div>
+
+      <canvas
+        id="drawing-layer"
+        aria-label="Área para desenhar as runas"
+      ></canvas>
+
+      <div id="battle-message" aria-live="assertive"></div>
+    </main>
+
+    <section id="castle" aria-label="Área protegida do castelo">
+      <div id="player" aria-label="Mago defensor">
+        <div
+          class="player-sprite idle"
+          role="img"
+          aria-label="Mago protagonista"
+        ></div>
+      </div>
+    </section>
+
+    <div id="effects-layer" aria-hidden="true"></div>
+
+    <div id="game-over" class="game-over" hidden>
+      <strong>GAME OVER</strong>
+      <span id="final-score">SCORE: 000000</span>
+      <button id="restart-button" type="button">REINICIAR</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
