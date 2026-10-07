@@ -190,8 +190,8 @@ canvas {
   fill: none;
   stroke: currentColor;
   stroke-width: 2.35;
-  stroke-linecap: square;
-  stroke-linejoin: miter;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 
@@ -378,15 +378,15 @@ canvas {
   left: var(--player-x, 50%);
   top: var(--player-y, 68.5%);
   bottom: auto;
-  width: 64px;
-  height: 64px;
+  width: var(--player-display-size, 76px);
+  height: var(--player-display-size, 76px);
   transform: translate(-50%, -50%);
   filter: drop-shadow(3px 4px 0 rgba(0, 0, 0, 0.35));
 }
 
 .player-sprite {
-  width: 64px;
-  height: 64px;
+  width: var(--player-display-size, 76px);
+  height: var(--player-display-size, 76px);
   background-repeat: no-repeat;
   background-size: 400% 100%;
   background-position: 0% 0%;

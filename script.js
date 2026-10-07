@@ -65,32 +65,33 @@
 
   const GAME_CONFIG = {
     drawing: {
-      samplePoints: 64,
-      minPathLength: 34,
-      minPoints: 6,
-      recognitionThreshold: 0.68,
-      straightLineRatio: 0.9,
-      closedGestureRatio: 0.22,
-      ambiguityDistanceMargin: 0.028,
+      samplePoints: 72,
+      minPathLength: 28,
+      minPoints: 5,
+      recognitionThreshold: 0.62,
+      straightLineRatio: 0.86,
+      closedGestureRatio: 0.3,
+      ambiguityDistanceMargin: 0.018,
+      templateRotations: [-12, -6, 0, 6, 12],
       trailWidth: 4,
       trailDuration: 180
     },
 
     difficulty: {
-      difficultyTierDuration: 15,
-      baseEnemySpeed: 34,
-      speedIncreasePerTier: 0.06,
-      maxSpeedMultiplier: 2.1,
+      difficultyTierDuration: 10,
+      baseEnemySpeed: 46,
+      speedIncreasePerTier: 0.045,
+      maxSpeedMultiplier: 2.05,
       randomSpeedVariation: 0.035
     },
 
     spawn: {
-      initialInterval: 3.4,
-      intervalReductionPerTier: 0.11,
-      minimumInterval: 1.5,
+      initialInterval: 2.65,
+      intervalReductionPerTier: 0.085,
+      minimumInterval: 1.4,
       initialSingleEnemyLimit: 3,
       maxSingleEnemies: 4,
-      singleEnemyLimitIncreaseTier: 2,
+      singleEnemyLimitIncreaseTier: 3,
       maxMultiRuneEnemies: 2,
       maxNormalEnemiesTotal: 6,
       positionAttempts: 14,
@@ -98,18 +99,19 @@
     },
 
     multiRune: {
+      multiRuneStartTime: 30,
       unlockTimes: {
-        2: 60,
-        3: 120,
-        4: 180,
-        5: 240
+        2: 30,
+        3: 90,
+        4: 150,
+        5: 210
       },
       distributions: [
         { minTime: 0, weights: { 1: 1 } },
-        { minTime: 60, weights: { 1: 0.78, 2: 0.22 } },
-        { minTime: 120, weights: { 1: 0.62, 2: 0.3, 3: 0.08 } },
-        { minTime: 180, weights: { 1: 0.54, 2: 0.28, 3: 0.14, 4: 0.04 } },
-        { minTime: 240, weights: { 1: 0.48, 2: 0.28, 3: 0.15, 4: 0.07, 5: 0.02 } }
+        { minTime: 30, weights: { 1: 0.78, 2: 0.22 } },
+        { minTime: 90, weights: { 1: 0.62, 2: 0.3, 3: 0.08 } },
+        { minTime: 150, weights: { 1: 0.54, 2: 0.28, 3: 0.14, 4: 0.04 } },
+        { minTime: 210, weights: { 1: 0.48, 2: 0.28, 3: 0.15, 4: 0.07, 5: 0.02 } }
       ],
       speedModifiers: {
         1: 1,
@@ -128,32 +130,24 @@
     },
 
     runes: {
-      advancedRuneStartTier: 3,
-      advancedRuneChancePerTier: 0.05,
-      maxAdvancedRuneChance: 0.3,
-      bossAdvancedChanceMultiplier: 1.0,
-      maxAdvancedPerEnemy: {
-        1: 1,
-        2: 1,
-        3: 1,
-        4: 2,
-        5: 2
-      },
-      maxBossAdvancedRunes: 3,
-      preventConsecutiveAdvanced: true,
+      hardRuneStartTime: 20,
+      hardRuneBaseChance: 0.08,
+      hardRuneChancePerTier: 0.035,
+      maxHardRuneChance: 0.28,
       preventConsecutiveDuplicate: true
     },
 
     boss: {
-      firstBossTime: 90,
+      firstBossTime: 60,
       bossInterval: 90,
       warningDuration: 2.4,
       postBossDelay: 2.6,
-      baseRuneCount: 5,
-      maxRuneCount: 8,
-      baseBossSpeed: 15.5,
-      bossSpeedIncreasePerTier: 0.85,
-      maxBossSpeed: 24.5
+      firstBossRuneCount: 10,
+      bossRuneIncreasePerCycle: 1,
+      maxBossRuneCount: 15,
+      baseBossSpeed: 20.6,
+      bossSpeedIncreasePerCycle: 1.15,
+      maxBossSpeed: 27.5
     },
 
     battlefield: {
@@ -183,6 +177,7 @@
       normalDisplaySize: 64,
       miniDragonDisplaySize: 76,
       bossDisplaySize: 128,
+      playerDisplaySize: 76,
       walkCycleDuration: 520,
       bossWalkCycleDuration: 620,
       playerIdleCycleDuration: 620,
@@ -203,134 +198,182 @@
   };
 
   const RUNE_DEFINITIONS = {
-    VERTICAL: {
-      id: "VERTICAL",
-      friendlyName: "Vertical",
+    EASY_Z: {
+      id: "EASY_Z",
+      friendlyName: "Z",
+      category: "easy",
       asset: null,
-      assetFile: "rune_vertical.png",
+      visual: {
+        viewBox: "0 0 24 24",
+        paths: [[[4, 5], [20, 5], [5, 19], [20, 19]]]
+      },
+      templates: [
+        [[-1, -0.82], [1, -0.82], [-0.92, 0.82], [1, 0.82]],
+        [[-1, -0.72], [0.9, -0.78], [-0.78, 0.9], [1, 0.82]],
+        [[-0.92, -0.9], [1, -0.75], [-1, 0.72], [0.92, 0.9]]
+      ]
+    },
+
+    EASY_N: {
+      id: "EASY_N",
+      friendlyName: "N",
+      category: "easy",
+      asset: null,
+      visual: {
+        viewBox: "0 0 24 24",
+        paths: [[[6, 19], [6, 5], [12, 14], [18, 19], [18, 5]]]
+      },
+      templates: [
+        [[-0.82, 1], [-0.82, -1], [0.0, 0.25], [0.82, 1], [0.82, -1]],
+        [[-0.72, 1], [-0.78, -0.92], [0.08, 0.18], [0.9, 0.95], [0.82, -1]],
+        [[-0.9, 0.95], [-0.82, -1], [-0.08, 0.1], [0.78, 1], [0.9, -0.9]]
+      ]
+    },
+
+    EASY_VERTICAL: {
+      id: "EASY_VERTICAL",
+      friendlyName: "Linha vertical",
+      category: "easy",
+      asset: null,
       visual: {
         viewBox: "0 0 24 24",
         paths: [[[12, 4], [12, 20]]]
       },
-      templates: [[[0, -1], [0, 1]]]
+      templates: [
+        [[0, -1], [0, 1]],
+        [[-0.06, -1], [0.02, 0], [0.08, 1]],
+        [[0.08, -1], [0.0, 0], [-0.05, 1]]
+      ]
     },
 
-    HORIZONTAL: {
-      id: "HORIZONTAL",
-      friendlyName: "Horizontal",
+    EASY_HORIZONTAL: {
+      id: "EASY_HORIZONTAL",
+      friendlyName: "Linha horizontal",
+      category: "easy",
       asset: null,
-      assetFile: "rune_horizontal.png",
       visual: {
         viewBox: "0 0 24 24",
         paths: [[[4, 12], [20, 12]]]
       },
-      templates: [[[-1, 0], [1, 0]]]
-    },
-
-    Z: {
-      id: "Z",
-      friendlyName: "Z",
-      asset: null,
-      assetFile: "rune_z.png",
-      visual: {
-        viewBox: "0 0 24 24",
-        paths: [[[4, 5], [20, 5], [4, 19], [20, 19]]]
-      },
-      templates: [[[-1, -0.82], [1, -0.82], [-1, 0.82], [1, 0.82]]]
-    },
-
-    N: {
-      id: "N",
-      friendlyName: "N",
-      asset: null,
-      assetFile: "rune_n.png",
-      visual: {
-        viewBox: "0 0 24 24",
-        paths: [[[5, 20], [5, 4], [19, 20], [19, 4]]]
-      },
-      templates: [[[-0.82, 1], [-0.82, -1], [0.82, 1], [0.82, -1]]]
-    },
-
-    LEFT: {
-      id: "LEFT",
-      friendlyName: "Menor que",
-      asset: null,
-      assetFile: "rune_left.png",
-      visual: {
-        viewBox: "0 0 24 24",
-        paths: [[[18, 5], [6, 12], [18, 19]]]
-      },
-      templates: [[[1, -1], [-1, 0], [1, 1]]]
-    },
-
-    RIGHT: {
-      id: "RIGHT",
-      friendlyName: "Maior que",
-      asset: null,
-      assetFile: "rune_right.png",
-      visual: {
-        viewBox: "0 0 24 24",
-        paths: [[[6, 5], [18, 12], [6, 19]]]
-      },
-      templates: [[[-1, -1], [1, 0], [-1, 1]]]
-    },
-
-    HOURGLASS: {
-      id: "HOURGLASS",
-      friendlyName: "Ampulheta",
-      asset: null,
-      assetFile: "rune_hourglass.png",
-      visual: {
-        viewBox: "0 0 24 24",
-        paths: [[[4, 5], [20, 5], [6, 19], [18, 19], [4, 5]]]
-      },
       templates: [
-        [[-1, -1], [1, -1], [-0.75, 1], [0.75, 1], [-1, -1]],
-        [[1, -1], [-1, -1], [0.75, 1], [-0.75, 1], [1, -1]]
+        [[-1, 0], [1, 0]],
+        [[-1, -0.05], [0, 0.02], [1, 0.07]],
+        [[-1, 0.08], [0, 0], [1, -0.06]]
       ]
     },
 
-    LOWER_B: {
-      id: "LOWER_B",
-      friendlyName: "b",
+    EASY_U: {
+      id: "EASY_U",
+      friendlyName: "U",
+      category: "easy",
       asset: null,
-      assetFile: "rune_b.png",
       visual: {
         viewBox: "0 0 24 24",
-        paths: [[
-          [8, 4], [8, 20], [12, 20], [16, 19], [19, 16], [19, 12],
-          [17, 9], [13, 8], [10, 9], [8, 11]
-        ]]
+        paths: [[[6, 5], [5, 9], [5, 14], [7, 18], [10, 20], [14, 20], [17, 18], [19, 14], [19, 5]]]
       },
-      templates: [[
-        [-0.75, -1], [-0.75, 1], [-0.25, 1], [0.35, 0.9], [0.8, 0.55],
-        [0.88, 0.05], [0.62, -0.35], [0.12, -0.5], [-0.35, -0.38], [-0.75, -0.12]
-      ]]
+      templates: [
+        [[-0.82, -1], [-0.95, -0.45], [-0.92, 0.3], [-0.65, 0.78], [-0.25, 1], [0.28, 1], [0.68, 0.78], [0.92, 0.28], [0.82, -1]],
+        [[-0.72, -1], [-0.9, -0.35], [-0.85, 0.42], [-0.48, 0.88], [0, 1], [0.48, 0.88], [0.85, 0.4], [0.75, -1]],
+        [[-0.92, -0.92], [-1, -0.28], [-0.88, 0.5], [-0.52, 0.92], [-0.1, 1], [0.38, 0.92], [0.76, 0.55], [0.95, -0.88]]
+      ]
     },
 
-    S: {
-      id: "S",
-      friendlyName: "S",
+    EASY_V: {
+      id: "EASY_V",
+      friendlyName: "V",
+      category: "easy",
       asset: null,
-      assetFile: "rune_s.png",
+      visual: {
+        viewBox: "0 0 24 24",
+        paths: [[[5, 5], [12, 19], [19, 5]]]
+      },
+      templates: [
+        [[-1, -1], [0, 1], [1, -1]],
+        [[-0.9, -1], [-0.08, 0.95], [1, -0.82]],
+        [[-1, -0.82], [0.1, 1], [0.86, -1]]
+      ]
+    },
+
+    EASY_CARET: {
+      id: "EASY_CARET",
+      friendlyName: "Chevron para cima",
+      category: "easy",
+      asset: null,
+      visual: {
+        viewBox: "0 0 24 24",
+        paths: [[[5, 19], [12, 5], [19, 19]]]
+      },
+      templates: [
+        [[-1, 1], [0, -1], [1, 1]],
+        [[-0.9, 1], [0.08, -0.95], [1, 0.82]],
+        [[-1, 0.82], [-0.08, -1], [0.88, 1]]
+      ]
+    },
+
+    HARD_01: {
+      id: "HARD_01",
+      friendlyName: "Símbolo difícil 01",
+      category: "hard",
+      asset: null,
       visual: {
         viewBox: "0 0 24 24",
         paths: [[
-          [19, 5], [16, 4], [12, 4], [8, 5], [6, 8], [8, 10], [12, 11],
-          [16, 12], [18, 15], [17, 18], [13, 20], [9, 20], [5, 18]
+          [7, 21], [7, 12], [7, 9], [4.5, 8.5], [3.5, 6.2], [4.2, 4],
+          [7.2, 4.8], [7.2, 9.5], [16.5, 9.5], [16.5, 6.5], [18, 4.5],
+          [20.5, 5], [21, 7], [19, 9.5], [16.5, 9.5], [16.5, 15], [18, 20]
         ]]
       },
-      templates: [[
-        [0.95, -0.85], [0.55, -1], [0.05, -1], [-0.5, -0.82], [-0.82, -0.48],
-        [-0.58, -0.15], [-0.08, 0], [0.45, 0.12], [0.78, 0.42], [0.7, 0.75],
-        [0.25, 1], [-0.3, 1], [-0.9, 0.78]
-      ]]
+      templates: [
+        [[-0.55, 1], [-0.55, 0.2], [-0.58, -0.2], [-0.9, -0.25], [-1, -0.6], [-0.82, -0.9], [-0.48, -0.72], [-0.48, -0.15], [0.4, -0.15], [0.4, -0.55], [0.62, -0.88], [0.92, -0.78], [1, -0.46], [0.72, -0.15], [0.4, -0.15], [0.4, 0.48], [0.62, 1]],
+        [[-0.62, 1], [-0.6, 0.28], [-0.58, -0.12], [-0.88, -0.22], [-0.98, -0.55], [-0.76, -0.82], [-0.45, -0.68], [-0.46, -0.08], [0.36, -0.08], [0.38, -0.48], [0.58, -0.8], [0.9, -0.72], [0.98, -0.42], [0.7, -0.08], [0.38, -0.08], [0.42, 0.52], [0.6, 0.95]],
+        [[-0.5, 0.95], [-0.52, 0.15], [-0.5, -0.28], [-0.82, -0.32], [-0.92, -0.65], [-0.72, -0.92], [-0.42, -0.76], [-0.42, -0.2], [0.46, -0.2], [0.46, -0.58], [0.68, -0.9], [0.96, -0.82], [1, -0.52], [0.78, -0.18], [0.46, -0.18], [0.46, 0.44], [0.66, 1]]
+      ]
+    },
+
+    HARD_02: {
+      id: "HARD_02",
+      friendlyName: "Símbolo difícil 02",
+      category: "hard",
+      asset: null,
+      visual: {
+        viewBox: "0 0 24 24",
+        paths: [[[12, 3], [18, 8], [21, 11], [16, 14], [13, 21], [9, 15], [4, 11], [8, 7], [12, 3]]]
+      },
+      templates: [
+        [[0, -1], [0.58, -0.48], [1, -0.08], [0.48, 0.28], [0.08, 1], [-0.35, 0.35], [-1, -0.05], [-0.48, -0.52], [0, -1]],
+        [[0.05, -1], [0.55, -0.55], [0.95, -0.1], [0.5, 0.2], [0.05, 0.95], [-0.4, 0.32], [-0.92, -0.08], [-0.5, -0.48], [0.05, -1]],
+        [[-0.05, -0.95], [0.62, -0.42], [1, 0], [0.42, 0.32], [0, 1], [-0.45, 0.4], [-1, -0.02], [-0.55, -0.58], [-0.05, -0.95]]
+      ]
+    },
+
+    HARD_03: {
+      id: "HARD_03",
+      friendlyName: "Símbolo difícil 03",
+      category: "hard",
+      asset: null,
+      visual: {
+        viewBox: "0 0 24 24",
+        paths: [[[5, 5], [12, 10], [20, 18], [4, 21], [12, 10], [19, 5]]]
+      },
+      templates: [
+        [[-0.78, -0.82], [0, -0.18], [1, 0.72], [-1, 1], [0, -0.18], [0.78, -0.82]],
+        [[-0.92, -0.72], [-0.05, -0.15], [0.95, 0.68], [-1, 0.92], [-0.05, -0.15], [0.72, -0.95]],
+        [[-0.72, -0.95], [0.08, -0.22], [1, 0.82], [-0.92, 1], [0.08, -0.22], [0.92, -0.7]]
+      ]
     }
   };
 
-  const BASIC_RUNE_KEYS = ["VERTICAL", "HORIZONTAL", "Z", "N", "LEFT", "RIGHT"];
-  const ADVANCED_RUNE_KEYS = ["HOURGLASS", "LOWER_B", "S"];
-  const VALID_RUNE_KEYS = [...BASIC_RUNE_KEYS, ...ADVANCED_RUNE_KEYS];
+  const EASY_RUNE_KEYS = [
+    "EASY_Z",
+    "EASY_N",
+    "EASY_VERTICAL",
+    "EASY_HORIZONTAL",
+    "EASY_U",
+    "EASY_V",
+    "EASY_CARET"
+  ];
+  const HARD_RUNE_KEYS = ["HARD_01", "HARD_02", "HARD_03"];
+  const VALID_RUNE_KEYS = [...EASY_RUNE_KEYS, ...HARD_RUNE_KEYS];
 
   const MOB_ART_CATALOG = {
     single: GAME_ASSETS.mobs.single.map((entry) => ({
@@ -411,13 +454,12 @@
     return config.baseEnemySpeed * temporalMultiplier * randomMultiplier * runeCountModifier;
   }
 
-  function getBossSpeed(elapsed) {
-    const tier = getDifficultyTier(elapsed);
+  function getBossSpeed(cycle) {
     const config = GAME_CONFIG.boss;
 
     return Math.min(
       config.maxBossSpeed,
-      config.baseBossSpeed + tier * config.bossSpeedIncreasePerTier
+      config.baseBossSpeed + Math.max(0, cycle - 1) * config.bossSpeedIncreasePerCycle
     );
   }
 
@@ -439,15 +481,20 @@
       : config.initialSingleEnemyLimit;
   }
 
-  function getAdvancedRuneChance(elapsed) {
-    const tier = getDifficultyTier(elapsed);
+  function getHardRuneChance(elapsed) {
     const config = GAME_CONFIG.runes;
 
-    if (tier < config.advancedRuneStartTier) return 0;
+    if (elapsed < config.hardRuneStartTime) return 0;
+
+    const tier = getDifficultyTier(elapsed);
+    const startTier = Math.floor(
+      config.hardRuneStartTime / GAME_CONFIG.difficulty.difficultyTierDuration
+    );
 
     return Math.min(
-      (tier - config.advancedRuneStartTier + 1) * config.advancedRuneChancePerTier,
-      config.maxAdvancedRuneChance
+      config.maxHardRuneChance,
+      config.hardRuneBaseChance +
+        Math.max(0, tier - startTier) * config.hardRuneChancePerTier
     );
   }
 
@@ -511,37 +558,33 @@
     return randomChoice(filtered.length > 0 ? filtered : pool);
   }
 
-  function buildBalancedRuneSequence(runeCount, elapsed, options = {}) {
-    const config = GAME_CONFIG.runes;
-    const isBoss = Boolean(options.isBoss);
-    const advancedChance = Math.min(
-      getAdvancedRuneChance(elapsed) * (isBoss ? config.bossAdvancedChanceMultiplier : 1),
-      config.maxAdvancedRuneChance
-    );
-    const maxAdvanced = isBoss
-      ? config.maxBossAdvancedRunes
-      : config.maxAdvancedPerEnemy[runeCount] || 1;
+  function chooseSingleRune(elapsed) {
+    const hardChance = getHardRuneChance(elapsed);
 
+    if (hardChance > 0 && Math.random() < hardChance) {
+      return randomChoice(HARD_RUNE_KEYS);
+    }
+
+    return randomChoice(EASY_RUNE_KEYS);
+  }
+
+  function buildEasyRuneSequence(runeCount) {
     const sequence = [];
-    let advancedUsed = 0;
-    let previousWasAdvanced = false;
 
     for (let index = 0; index < runeCount; index += 1) {
       const previousRune = sequence[sequence.length - 1] || null;
-      const canUseAdvanced =
-        ADVANCED_RUNE_KEYS.length > 0 &&
-        advancedUsed < maxAdvanced &&
-        (!config.preventConsecutiveAdvanced || !previousWasAdvanced);
-      const useAdvanced = canUseAdvanced && Math.random() < advancedChance;
-      const pool = useAdvanced ? ADVANCED_RUNE_KEYS : BASIC_RUNE_KEYS;
-      const rune = chooseRuneKey(pool, previousRune);
-
-      sequence.push(rune);
-      previousWasAdvanced = ADVANCED_RUNE_KEYS.includes(rune);
-      if (previousWasAdvanced) advancedUsed += 1;
+      sequence.push(chooseRuneKey(EASY_RUNE_KEYS, previousRune));
     }
 
     return sequence;
+  }
+
+  function buildEnemyRuneSequence(runeCount, elapsed) {
+    if (runeCount === 1) {
+      return [chooseSingleRune(elapsed)];
+    }
+
+    return buildEasyRuneSequence(runeCount);
   }
 
   function getEnemyScore(runeCount) {
@@ -654,7 +697,7 @@
         definition.templates.forEach((rawTemplate) => {
           const base = rawTemplate.map(([x, y]) => ({ x, y }));
 
-          [-10, 0, 10].forEach((degrees) => {
+          this.config.templateRotations.forEach((degrees) => {
             const rotated = this.rotate(base, degrees * Math.PI / 180);
 
             this.templates.push({
@@ -744,27 +787,37 @@
 
     getCandidateTemplates(metrics) {
       if (metrics.isStraight) {
-        if (metrics.width > metrics.height * 1.3) {
-          return this.templates.filter((template) => template.name === "HORIZONTAL");
+        if (metrics.width > metrics.height * 1.18) {
+          return this.templates.filter((template) => template.name === "EASY_HORIZONTAL");
         }
 
-        if (metrics.height > metrics.width * 1.3) {
-          return this.templates.filter((template) => template.name === "VERTICAL");
+        if (metrics.height > metrics.width * 1.18) {
+          return this.templates.filter((template) => template.name === "EASY_VERTICAL");
         }
 
-        return [];
+        return this.templates.filter((template) =>
+          template.name === "EASY_HORIZONTAL" || template.name === "EASY_VERTICAL"
+        );
       }
 
       if (metrics.isClosed) {
-        return this.templates.filter((template) => template.name === "HOURGLASS");
+        return this.templates.filter((template) => template.name === "HARD_02");
       }
 
-      const openRuneNames = ["Z", "N", "LEFT", "RIGHT", "LOWER_B", "S"];
+      const openRuneNames = [
+        "EASY_Z",
+        "EASY_N",
+        "EASY_U",
+        "EASY_V",
+        "EASY_CARET",
+        "HARD_01",
+        "HARD_03"
+      ];
 
-      // Uma ampulheta desenhada com fechamento imperfeito ainda pode competir,
-      // mas só quando os extremos permanecem relativamente próximos.
-      if (metrics.closureRatio <= 0.58) {
-        openRuneNames.push("HOURGLASS");
+      // Um losango desenhado com fechamento imperfeito ainda pode competir,
+      // mas apenas se início e fim permanecerem relativamente próximos.
+      if (metrics.closureRatio <= 0.48) {
+        openRuneNames.push("HARD_02");
       }
 
       return this.templates.filter((template) => openRuneNames.includes(template.name));
@@ -1070,6 +1123,8 @@
       this.runes = [...runes];
       this.runeIndex = 0;
       this.runeCount = this.runes.length;
+      this.isHardRuneEnemy =
+        !isBoss && this.runeCount === 1 && HARD_RUNE_KEYS.includes(this.runes[0]);
       this.x = x;
       this.y = y;
       this.speed = speed;
@@ -1093,11 +1148,19 @@
       const wrapper = document.createElement("div");
       wrapper.className =
         `enemy enemy-runes-${Math.min(this.runeCount, 5)} ` +
-        `enemy-art-${this.artDefinition.id}${this.isBoss ? " boss" : ""}`;
+        `enemy-art-${this.artDefinition.id}${this.isBoss ? " boss" : ""}` +
+        `${this.isHardRuneEnemy ? " enemy-hard-rune" : ""}`;
 
       wrapper.dataset.runeCount = String(this.runeCount);
       wrapper.dataset.artKey = this.artDefinition.id;
       wrapper.dataset.enemyKind = this.isBoss ? "boss" : this.runeCount > 1 ? "multi" : "single";
+      wrapper.dataset.enemyCategory = this.isBoss
+        ? "boss"
+        : this.isHardRuneEnemy
+          ? "hard-rune"
+          : this.runeCount > 1
+            ? "multi-rune"
+            : "easy-rune";
       wrapper.dataset.state = "alive";
 
       if (this.isBoss && this.wave === 1) {
@@ -1360,7 +1423,7 @@
     }
 
     spawnNormal(elapsed, cycle, runeCount) {
-      const runes = buildBalancedRuneSequence(runeCount, elapsed);
+      const runes = buildEnemyRuneSequence(runeCount, elapsed);
       const artDefinition = getMobArtDefinition(runeCount, false);
       const containerWidth = getEnemyContainerWidth(
         runeCount,
@@ -1389,6 +1452,8 @@
         `art=${enemy.artDefinition.id}`,
         `speed=${speed.toFixed(1)}`,
         `spawn=${getSpawnInterval(elapsed).toFixed(2)}`,
+        `hardChance=${getHardRuneChance(elapsed).toFixed(2)}`,
+        `category=${enemy.isHardRuneEnemy ? "hard-rune" : runeCount > 1 ? "multi-rune" : "easy-rune"}`,
         `multiAlive=${this.getActiveMultiRuneEnemyCount()}`
       );
 
@@ -1418,7 +1483,7 @@
         runes,
         x,
         y: -Math.max(165, artDefinition.displaySize + 34),
-        speed: getBossSpeed(elapsed),
+        speed: getBossSpeed(cycle),
         isBoss: true,
         wave: cycle,
         artDefinition
@@ -1853,10 +1918,11 @@
 
     spawnBoss(elapsed) {
       const runeCount = Math.min(
-        GAME_CONFIG.boss.maxRuneCount,
-        GAME_CONFIG.boss.baseRuneCount + Math.floor((this.game.cycle - 1) / 2)
+        GAME_CONFIG.boss.maxBossRuneCount,
+        GAME_CONFIG.boss.firstBossRuneCount +
+          (this.game.cycle - 1) * GAME_CONFIG.boss.bossRuneIncreasePerCycle
       );
-      const runes = buildBalancedRuneSequence(runeCount, elapsed, { isBoss: true });
+      const runes = buildEasyRuneSequence(runeCount);
       this.boss = this.enemyManager.spawnBoss(runes, this.game.cycle, elapsed);
       this.state = "active";
       this.stateStartedAt = elapsed;
@@ -1978,6 +2044,10 @@
       this.gameElement.style.setProperty(
         "--castle-impact-y",
         `${GAME_CONFIG.battlefield.castleImpactYRatio * 100}%`
+      );
+      this.gameElement.style.setProperty(
+        "--player-display-size",
+        `${GAME_CONFIG.sprites.playerDisplaySize}px`
       );
 
       if (this.playerSprite) {
@@ -2167,8 +2237,8 @@
   window.GAME_CONFIG = GAME_CONFIG;
   window.MAGIC_CASTLE_RUNES = RUNE_DEFINITIONS;
   window.MAGIC_CASTLE_RUNE_GROUPS = {
-    basic: [...BASIC_RUNE_KEYS],
-    advanced: [...ADVANCED_RUNE_KEYS],
+    easy: [...EASY_RUNE_KEYS],
+    hard: [...HARD_RUNE_KEYS],
     all: [...VALID_RUNE_KEYS]
   };
   window.GAME_ASSETS = GAME_ASSETS;
